@@ -1,0 +1,8 @@
+{
+    "host"               :"https://gitlab.com",
+    "api_path"           :"/api/v3",
+    "token"              :"secret",
+    "InsecureSkipVerify" :true,
+    "project_id"         :"1",
+    "environment"        :"dev"
+}

@@ -1,0 +1,44 @@
+version: '3.5'
+services:
+    app:
+        image: "app:latest"
+        healthcheck:
+            test: curl -sf localhost:3000
+            interval: 30s
+            timeout: 30s
+            retries: 3
+        volumes:
+            - data-local:/var/lib/grafana
+        ports:
+            - "3000:3000"
+        networks: 
+            - app
+        deploy:
+            # placement:
+            #     constraints:
+            #         - node.labels.azs == 1
+            #         - node.role == manager
+            resources:
+                limits:
+                    cpus: '0.50'
+                    memory: 128M
+                reservations:
+                    cpus: '0.50'
+                    memory: 32M
+volumes:
+    data-local:
+        name: '{{.Service.Name}}-{{.Task.Slot}}'
+        driver: local
+    data-rexray-ebs:
+        name: 'rexray_{{.Service.Name}}-{{.Task.Slot}}'
+        driver: rexray/ebs
+        driver_opts:
+            size: 25
+    data-rexray-s3fs:
+        name: 'rexray_{{.Service.Name}}-{{.Task.Slot}}'
+        driver: rexray/s3fs
+
+networks:
+  app:
+    attachable: true
+    name: app
